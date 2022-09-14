@@ -1,0 +1,35 @@
+{
+  "name": "w2-day3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "yahya",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "express-ejs-layouts": "^2.5.1",
+    "express-validator": "^6.14.2",
+    "id-auto-increment": "^1.0.1",
+    "install": "^0.13.0",
+    "morgan": "^1.10.0",
+    "npm": "^8.19.1",
+    "pg": "^8.8.0",
+    "validation": "^0.0.1",
+    "validator": "^13.7.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wgs-bootcamp-2022/w2-day3.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wgs-bootcamp-2022/w2-day3/issues"
+  },
+  "homepage": "https://github.com/wgs-bootcamp-2022/w2-day3#readme"
+}

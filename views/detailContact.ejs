@@ -1,0 +1,35 @@
+<%- include('layout/header') %> 
+      <div class = "container">
+        <div class="card text-left w-30">
+          <div class="card-header text-center">
+            <h5>Detail Contact</h5>
+          </div>
+          <div class="card-body">
+            <table class="table table-success table-striped">
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Number</th>
+                <th>Address</th>
+
+
+              </tr>
+              <% data.forEach(contacts => { %>
+                  <td><%= contacts.id %> </td>
+                  <td><%= contacts.name %> </td>
+                  <td><%= contacts.email %> </td>
+                  <td><%= contacts.number %> </td>
+                  <td><%= contacts.address %> </td>
+
+              </tr>
+            <% }) %>
+          </table>
+             <div class="card-header">
+              <a href="/contact" class="btn btn-primary" role="button" aria-disabled="true">Back</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+<%- include('layout/footer') %> 
