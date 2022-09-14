@@ -7,7 +7,7 @@
             <li><%= error.msg %> </li>
         <% }) %>
     </div>
-  <% } else { %>
+  <% } else {%>
   
   <% data.forEach(element => { %>
     <form  action="/contact/<%=element.name%>/edit" method="POST">
@@ -30,7 +30,7 @@
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   <% }) %>
-  <% } %>
+  <% }  %> 
 
 </div>
 </body>

@@ -15,6 +15,18 @@ const getAbout = (req, res, next) => {
     next()
 }
 
+
+const getByName = (name) => {
+    return pool.query(`SELECT * FROM contacts WHERE LOWER(name) = '${name}'`);
+}
+
+const updateByName = (data) => {
+    const { oldname, name, email, number } = data;
+    return pool.query(
+      `UPDATE contacts SET name = '${name}', email = '${email}', number = '${number}'  WHERE name = '${oldname}'`,
+    );
+  }
+
 const getContact = (request, response) => {
     pool.query(`SELECT * FROM contacts ORDER BY name ASC`, (err, res)=>{
         if(err) {
@@ -38,24 +50,15 @@ const addContact = (req, res) => {
     res.render('add')
 }
 
-const isDuplicat = async (name) => {
-    try{
-        const isdup = pool.query(`SELECT * FROM contacts WHERE name = '${name}'`)
-        return isdup
-    } catch(err) {
-        console.error(err.message)
-    }
-}
-
 const addPostContact = [
     [
-        body('name').custom(async(value, {req}) => {
-            const duplicat = await isDuplicat(value)
-            if(duplicat) {
-            throw Error('Contact name is already used')
+        body('name').custom( async(value, { req }) => {
+            const contact = await getByName(value.toLowerCase());
+            if (value !== req.body.oldname && contact.rows[0]) {
+              throw new Error('Name Already Used!');
             }
-            return true
-        }),
+            return true;
+          }),
         check('email', 'Email address is invalid').isEmail(),
         check('number', 'Mobile number is invalid').isMobilePhone('id-ID')
     ],
@@ -91,45 +94,40 @@ const updateContact = (req, response) => {
 
 const editPostContact = [
     [
-        body('name').custom(async (value, {req}) => {
-            const duplicat = await isDuplicat(value)
-            if (value !== req.body.name && duplicat) {
-                throw new Error('Contact Name is already used')
+        body('name').custom( async(value, { req }) => {
+            const contact = await updateByName(value.toLowerCase());
+            if (value !== req.body.oldname && contact.rows[0]) {
+              throw new Error('Name already used!');
             }
-            return true
-        }),
+            return true;
+          }),
         check('email', 'Email address is invalid').isEmail(),
         check('number', 'Mobile number is invalid').isMobilePhone('id-ID')
     ],
-    async (req, res) => {
-        let data = {
-            oldname: req.body.name,
+    
+    (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.render('editContact', {
+            data: req.body,
+            errors: errors.array()
+            });
+        } 
+        let objparam = {
             name: req.body.name,
             email: req.body.email,
             number: req.body.number
         }
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.render('editContact', {
-            data,
-            errors: errors.array()
-            });
-        } 
-        // const {oldname,name,email,number} = req.body
-        pool.query(`UPDATE contacts SET name = '${data.name}', email = '${data.email}', number = '${data.number}' WHERE name = '${data.oldname}'`, (error, results) => {
-              if (error) {
-                throw error
-              }
-              console.log(response)
-            }
-          )
-        res.redirect('/contact')
+        console.log(errors)
+        updateByName(objparam);
+        res.redirect('/contact');
+
     }
 ]
 
 
 const deleteContact = (request, response) => {
-    const name = request.params.name
+    const name = request.params.name.toLowerCase()
     console.log(name)
     pool.query('DELETE FROM contacts WHERE name = $1', [name], (error, results) => {
       if (error) {
